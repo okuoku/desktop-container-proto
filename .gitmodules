@@ -1,0 +1,3 @@
+[submodule "disp/weston-patched"]
+	path = disp/weston-patched
+	url = https://github.com/okuoku/weston-mirror
