@@ -1,12 +1,14 @@
 FROM alpine:edge as build
 
-# Build patched weston
+ADD /PulseAudio-patched/ /PulseAudio-patched/
 ADD /weston-patched/ /weston-patched/
+
+# Build patched weston
 RUN apk add libxkbcommon-dev pixman-dev pkgconf wayland-dev \
     libinput-dev libevdev-dev libdrm-dev wayland-protocols cairo-dev mesa-dev \
     linux-pam-dev \
     freerdp-dev xwayland-dev xwayland libxcursor-dev librsvg-dev \
-    meson gcc musl-dev
+    meson gcc g++ musl-dev
 
 WORKDIR /weston-patched
 RUN meson build/ --prefix=/opt/weston --libdir=/opt/weston/lib \
@@ -19,6 +21,19 @@ RUN meson build/ --prefix=/opt/weston --libdir=/opt/weston/lib \
 RUN ninja -C build
 RUN ninja -C build install
 
+# Build patched PulseAudio
+WORKDIR /PulseAudio-patched
+ADD pulseaudio-.tarball-version /PulseAudio-patched/.tarball-version
+RUN apk add \
+    libsndfile-dev tdb-dev libsm-dev libice-dev libxtst-dev \
+    libtool \
+    g++ m4
+RUN meson build/ -Dtests=false -Ddoxygen=false -Dman=false \
+  -Doss-output=disabled -Dudev=disabled \
+  -Dopenssl=disabled --prefix=/opt/PulseAudio --sysconfdir=/etc
+RUN ninja -C build
+RUN ninja -C build install
+
 # Build final runner
 # FIMXE: Strip debugging information
 FROM alpine:edge
@@ -28,4 +43,6 @@ RUN apk add libxkbcommon pixman wayland \
     libinput libevdev libdrm wayland-protocols cairo mesa \
     linux-pam-dev \
     freerdp xwayland libxcursor librsvg \
-    musl
+    libsndfile tdb libsm libice libxtst \
+    libltdl \
+    musl libstdc++

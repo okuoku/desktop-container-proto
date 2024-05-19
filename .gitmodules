@@ -1,3 +1,6 @@
 [submodule "disp/weston-patched"]
 	path = disp/weston-patched
 	url = https://github.com/okuoku/weston-mirror
+[submodule "disp/PulseAudio-patched"]
+	path = disp/PulseAudio-patched
+	url = git@github.com:okuoku/pulseaudio-mirror.git
