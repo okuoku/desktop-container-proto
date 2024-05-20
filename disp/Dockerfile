@@ -38,11 +38,17 @@ RUN ninja -C build install
 # FIMXE: Strip debugging information
 FROM alpine:edge
 COPY --from=build /opt /opt
-Add startup.sh /
 RUN apk add libxkbcommon pixman wayland \
-    libinput libevdev libdrm wayland-protocols cairo mesa \
+    libinput libevdev libdrm wayland-protocols cairo \
+    mesa-egl mesa-gles mesa-gl \
     linux-pam-dev \
     freerdp xwayland libxcursor librsvg \
     libsndfile tdb libsm libice libxtst \
     libltdl \
-    musl libstdc++
+    musl libstdc++ 
+
+# FIXME: This is tentative; find some suitable X11(or Wayland) client
+RUN apk add xeyes
+
+# Add startup script
+Add startup.sh /
