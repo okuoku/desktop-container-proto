@@ -9,5 +9,5 @@ mkdir /tmp/.X11-unix
   "--load=module-rdp-source source_name=RDPSource" \
   "--load=module-native-protocol-unix socket=/tmp/PluseServer auth-anonymous=true" &
 
-exec /opt/weston/bin/weston --shell=rdprail-shell.so --address=0.0.0.0 \
+/opt/weston/bin/weston --shell=rdprail-shell.so --address=0.0.0.0 \
     --port=5699 --xwayland
